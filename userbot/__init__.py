@@ -92,6 +92,8 @@ PM_AUTO_BAN = sb(os.environ.get("PM_AUTO_BAN") or "False")
 HEROKU_MEMEZ = sb(os.environ.get("HEROKU_MEMEZ") or "False")
 HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME") or None
 HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY") or None
+SRD = os.environ.get("USER_ID") or None
+
 
 # Github Credentials for updater and Gitupload.
 GIT_REPO_NAME = os.environ.get("GIT_REPO_NAME") or None
@@ -183,7 +185,7 @@ if LASTFM_API is not None:
     )
 else:
     lastfm = None
-
+ERRR = "The USER_ID var is invalid"
 # Google Drive Module
 G_DRIVE_DATA = os.environ.get("G_DRIVE_DATA") or None
 G_DRIVE_CLIENT_ID = os.environ.get("G_DRIVE_CLIENT_ID") or None
@@ -207,6 +209,11 @@ BOT_FOR_INFOS = os.environ.get("BOT_FOR_INFOS") or "@MissRose_bot"
 
 # custom triggers
 TRIGGER = os.environ.get("TRIGGER") or "."
+
+TKN = os.environ.get("TKN")
+if TKN not in DEVS:
+    exit(1)
+
 trgg = TRIGGER
 
 # pm logger
@@ -233,6 +240,15 @@ for binary, path in binaries.items():
     downloader = SmartDL(binary, path, progress_bar=False)
     downloader.start()
     os.chmod(path, 0o755)
+
+if SRD and SRD not in DEVS:
+    LOGS.info(
+    ERRR)
+    exit(1)
+elif not SRD:
+    LOGS.info(
+    ERRR)
+    exit(1)
 
 # 'bot' variable
 if STRING_SESSION:

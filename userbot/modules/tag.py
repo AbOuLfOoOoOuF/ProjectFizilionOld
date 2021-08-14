@@ -5,6 +5,9 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 
+# imported from catuserbot 
+# modified by @AbOuLfOoOoOuF for fizilion
+
 
 from telethon.tl.types import ChannelParticipantAdmin as admin
 from telethon.tl.types import ChannelParticipantCreator as owner

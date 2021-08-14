@@ -182,11 +182,6 @@ async def selfdestruct(destroy):
 
 
 
-@register(outgoing=True, pattern="^s/")
-async def deletesed(delsed):
-    await delsed.delete()
-
-
 CMD_HELP.update(
     {
         "purge": ".purge\
@@ -237,10 +232,3 @@ CMD_HELP.update(
     }
 )
 
-CMD_HELP.update(
-    {
-        "s": "s/*  sed deleter\
-\nUsage: deletes the sed message\
-\nwhen u use the s/*/* the bots auto deletes it"
-    }
-)
