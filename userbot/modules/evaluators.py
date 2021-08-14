@@ -10,11 +10,11 @@ import re
 from os import remove
 from sys import executable
 
-from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, USER_TERM_ALIAS
+from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, USER_TERM_ALIAS, trgg, tgbott
 from userbot.events import register
 
 
-@register(outgoing=True, pattern=r"^\.eval(?: |$|\n)(.*)")
+@register(outgoing=True, pattern=r"^\{trg}eval(?: |$|\n)(.*)".format(trg=trgg))
 async def evaluate(query):
     """ For .eval command, evaluates the given Python expression. """
     if query.is_channel and not query.is_group:
@@ -63,12 +63,12 @@ async def evaluate(query):
         )
 
     if BOTLOG:
-        await query.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, f"Eval query {expression} was executed successfully."
         )
 
 
-@register(outgoing=True, pattern=r"^\.exec(?: |$|\n)([\s\S]*)")
+@register(outgoing=True, pattern=r"^\{trg}exec(?: |$|\n)([\s\S]*)".format(trg=trgg))
 async def run(run_q):
     """ For .exec command, which executes the dynamically created program """
     code = run_q.pattern_match.group(1)
@@ -132,12 +132,12 @@ async def run(run_q):
         )
 
     if BOTLOG:
-        await run_q.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "Exec query " + codepre + " was executed successfully."
         )
 
 
-@register(outgoing=True, pattern="^.shell(?: |$)(.*)")
+@register(outgoing=True, pattern="^\{trg}shell(?: |$)(.*)".format(trg=trgg))
 async def terminal_runner(term):
     """ For .shell command, runs bash commands and scripts on your server. """
     curruser = USER_TERM_ALIAS
@@ -183,7 +183,7 @@ async def terminal_runner(term):
         await term.edit("`" f"{curruser}:~$ {command}" f"\n{result}" "`")
 
     if BOTLOG:
-        await term.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "Shell command " + command + " was executed sucessfully.",
         )
 

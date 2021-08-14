@@ -7,11 +7,11 @@
 import asyncio
 from asyncio import sleep
 
-from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP
+from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, trgg, tgbott
 from userbot.events import register
 
 
-@register(outgoing=True, pattern="^.cspam (.*)")
+@register(outgoing=True, pattern="^\{trg}cspam (.*)".format(trg=trgg))
 async def leter_spam(cspammer):
     cspam = str(cspammer.pattern_match.group(1))
     message = cspam.replace(" ", "")
@@ -19,12 +19,12 @@ async def leter_spam(cspammer):
     for letter in message:
         await cspammer.respond(letter)
     if BOTLOG:
-        await cspammer.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "#CSPAM\n" "TSpam was executed successfully"
         )
 
 
-@register(outgoing=True, pattern="^.wspam (.*)")
+@register(outgoing=True, pattern="^\{trg}wspam (.*)".format(trg=trgg))
 async def word_spam(wspammer):
     wspam = str(wspammer.pattern_match.group(1))
     message = wspam.split()
@@ -32,12 +32,12 @@ async def word_spam(wspammer):
     for word in message:
         await wspammer.respond(word)
     if BOTLOG:
-        await wspammer.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "#WSPAM\n" "WSpam was executed successfully"
         )
 
 
-@register(outgoing=True, pattern="^.spam (.*)")
+@register(outgoing=True, pattern="^\{trg}spam (.*)".format(trg=trgg))
 async def spammer(spamm):
     counter = int(spamm.pattern_match.group(1).split(" ", 1)[0])
     textx = await spamm.get_reply_message()
@@ -46,19 +46,25 @@ async def spammer(spamm):
         await spamm.delete()
         await asyncio.wait([spamm.respond(spam_message) for i in range(counter)])
         if BOTLOG:
-            await spamm.client.send_message(
+            await tgbott.send_message(
                 BOTLOG_CHATID, "#SPAM\n" "Spam was executed successfully"
             )
     elif (textx and textx.text):
         await spamm.delete()
         await asyncio.wait([spamm.respond(textx) for i in range(counter)])
         if BOTLOG:
-            await spamm.client.send_message(
+            await tgbott.send_message(
                 BOTLOG_CHATID, "#SPAM\n" "Spam was executed successfully"
             )
 
+@register(outgoing=True, pattern="^\{trg}rp$".format(trg=trgg))
+async def repeattt(event):
+    textx = await event.get_reply_message()
+    await event.delete()
+    await event.respond(textx)
 
-@register(outgoing=True, pattern="^.picspam")
+
+@register(outgoing=True, pattern="^\{trg}picspam".format(trg=trgg))
 async def tiny_pic_spam(pspam):
     message = pspam.text
     text = message.split()
@@ -68,12 +74,12 @@ async def tiny_pic_spam(pspam):
     for _ in range(1, counter):
         await pspam.client.send_file(pspam.chat_id, link)
     if BOTLOG:
-        await pspam.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "#PICSPAM\n" "PicSpam was executed successfully"
         )
 
 
-@register(outgoing=True, pattern="^.delayspam (.*)")
+@register(outgoing=True, pattern="^\{trg}delayspam (.*)".format(trg=trgg))
 async def dspammer(dspam):
     spamDelay = float(dspam.pattern_match.group(1).split(" ", 2)[0])
     counter = int(dspam.pattern_match.group(1).split(" ", 2)[1])
@@ -83,7 +89,7 @@ async def dspammer(dspam):
         await dspam.respond(spam_message)
         await sleep(spamDelay)
     if BOTLOG:
-        await dspam.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "#DelaySPAM\n" "DelaySpam was executed successfully"
         )
 
@@ -94,6 +100,8 @@ CMD_HELP.update(
 \nUsage: Spam the text letter by letter.\
 \n\n.spam <count> <text>\
 \nUsage: Floods text in the chat !!\
+\n\n.rp\
+\nUsage: Repeats the replier message!!\
 \n\n.wspam <text>\
 \nUsage: Spam the text word by word.\
 \n\n.picspam <count> <link to image/gif>\

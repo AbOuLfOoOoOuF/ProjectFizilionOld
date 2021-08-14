@@ -18,6 +18,8 @@ from userbot import (
     LASTMSG,
     LOGS,
     PM_AUTO_BAN,
+    trgg,
+    tgbott,
 )
 from userbot.events import register
 
@@ -83,7 +85,7 @@ async def permitpm(event):
             else:
                 COUNT_PM[event.chat_id] = COUNT_PM[event.chat_id] + 1
 
-            if COUNT_PM[event.chat_id] > 4:
+            if COUNT_PM[event.chat_id] > 3:
                 await event.respond(
                     "`You were spamming my PM, which I didn't like.`\n"
                     "`I Wouldn't let you to chat me again until further notice`\n"
@@ -95,7 +97,7 @@ async def permitpm(event):
                     del LASTMSG[event.chat_id]
                 except KeyError:
                     if BOTLOG:
-                        await event.client.send_message(
+                        await tgbott.send_message(
                             BOTLOG_CHATID,
                             "Count PM is seemingly going retard, plis restart bot!",
                         )
@@ -108,7 +110,7 @@ async def permitpm(event):
                 if BOTLOG:
                     name = await event.client.get_entity(event.chat_id)
                     name0 = str(name.first_name)
-                    await event.client.send_message(
+                    await tgbott.send_message(
                         BOTLOG_CHATID,
                         "["
                         + name0
@@ -161,7 +163,7 @@ async def auto_accept(event):
                         return
 
                 if is_approved(event.chat_id) and BOTLOG:
-                    await event.client.send_message(
+                    await tgbott.send_message(
                         BOTLOG_CHATID,
                         "#AUTO-APPROVED\n"
                         + "User: "
@@ -169,7 +171,7 @@ async def auto_accept(event):
                     )
 
 
-@register(outgoing=True, pattern=r"^.notifoff$")
+@register(outgoing=True, pattern=r"^\{trg}notifoff$".format(trg=trgg))
 async def notifoff(noff_event):
     """ For .notifoff command, stop getting notifications from unapproved PMs. """
     try:
@@ -181,7 +183,7 @@ async def notifoff(noff_event):
     await noff_event.edit("`Notifications from unapproved PM's are silenced!`")
 
 
-@register(outgoing=True, pattern=r"^.notifon$")
+@register(outgoing=True, pattern=r"^\{trg}notifon$".format(trg=trgg))
 async def notifon(non_event):
     """ For .notifoff command, get notifications from unapproved PMs. """
     try:
@@ -192,7 +194,7 @@ async def notifon(non_event):
     delgvar("NOTIF_OFF")
     await non_event.edit("`Notifications from unapproved PM's unmuted!`")
 
-@register(outgoing=True, pattern=r"^.(approve|a)$")
+@register(outgoing=True, pattern=r"^\{trg}(approve|a)$".format(trg=trgg))
 async def approvepm(apprvpm):
     """ For .approve command, give someone the permissions to PM you. """
     try:
@@ -235,12 +237,12 @@ async def approvepm(apprvpm):
     await apprvpm.edit(f"[{name0}](tg://user?id={uid}) `approved to PM!`")
 
     if BOTLOG:
-        await apprvpm.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID,
             "#APPROVED\n" + "User: " + f"[{name0}](tg://user?id={uid})",
         )
 
-@register(outgoing=True, pattern=r"^.(disapprove|da)$")
+@register(outgoing=True, pattern=r"^\{trg}(disapprove|da)$".format(trg=trgg))
 async def disapprovepm(disapprvpm):
     try:
         from userbot.modules.sql_helper.pm_permit_sql import dissprove
@@ -264,14 +266,14 @@ async def disapprovepm(disapprvpm):
     )
 
     if BOTLOG:
-        await disapprvpm.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID,
             f"[{name0}](tg://user?id={disapprvpm.chat_id})"
             " was disapproved to PM you.",
         )
 
 
-@register(outgoing=True, pattern=r"^.block$")
+@register(outgoing=True, pattern=r"^\{trg}block$".format(trg=trgg))
 async def blockpm(block):
     """ For .block command, block people from PMing you! """
     if block.reply_to_msg_id:
@@ -297,13 +299,13 @@ async def blockpm(block):
         pass
 
     if BOTLOG:
-        await block.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID,
             "#BLOCKED\n" + "User: " + f"[{name0}](tg://user?id={uid})",
         )
 
 
-@register(outgoing=True, pattern=r"^.unblock$")
+@register(outgoing=True, pattern=r"^\{trg}unblock$".format(trg=trgg))
 async def unblockpm(unblock):
     """ For .unblock command, let people PMing you again! """
     if unblock.reply_to_msg_id:
@@ -314,13 +316,13 @@ async def unblockpm(unblock):
         await unblock.edit("`You have been unblocked.`")
 
     if BOTLOG:
-        await unblock.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID,
             f"[{name0}](tg://user?id={replied_user.id})" " was unblocc'd!.",
         )
 
 
-@register(outgoing=True, pattern=r"^.(set|get|reset) pm_msg(?: |$)(\w*)")
+@register(outgoing=True, pattern=r"^\{trg}(set|get|reset) pm_msg(?: |$)(\w*)".format(trg=trgg))
 async def add_pmsg(cust_msg):
     """ Set your own Unapproved message. """
     if not PM_AUTO_BAN:
@@ -357,7 +359,7 @@ async def add_pmsg(cust_msg):
         await cust_msg.edit("`Message saved as unapproved message`")
 
         if BOTLOG:
-            await cust_msg.client.send_message(
+            await tgbott.send_message(
                 BOTLOG_CHATID, f"***{status} Unapproved message :*** \n\n{msg}"
             )
 

@@ -9,11 +9,11 @@ from asyncio import sleep
 
 from telethon.errors import rpcbaseerrors
 
-from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP
+from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, trgg, tgbott
 from userbot.events import register
 
 
-@register(outgoing=True, pattern="^.purge$")
+@register(outgoing=True, pattern="^\{trg}purge$".format(trg=trgg))
 async def fastpurger(purg):
     """ For .purge command, purge all messages starting from the reply. """
     chat = await purg.get_input_chat()
@@ -42,14 +42,49 @@ async def fastpurger(purg):
     )
 
     if BOTLOG:
-        await purg.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "Purge of " + str(count) + " messages done successfully."
         )
     await sleep(2)
     await done.delete()
 
 
-@register(outgoing=True, pattern="^.purgeme")
+@register(outgoing=True, pattern="^\{trg}(p| P)$".format(trg=trgg))
+async def fastpurger(purg):
+    """ For .purge command, purge all messages starting from the reply. """
+    chat = await purg.get_input_chat()
+    msgs = []
+    itermsg = purg.client.iter_messages(chat, min_id=purg.reply_to_msg_id)
+    count = 0
+
+    if purg.reply_to_msg_id is not None:
+        async for msg in itermsg:
+            msgs.append(msg)
+            count = count + 1
+            msgs.append(purg.reply_to_msg_id)
+            if len(msgs) == 100:
+                await purg.client.delete_messages(chat, msgs)
+                msgs = []
+    else:
+        await purg.edit("`I need a mesasge to start purging from.`")
+        return
+
+    if msgs:
+        await purg.client.delete_messages(chat, msgs)
+    done = await purg.client.send_message(
+        purg.chat_id,
+        f"`Fast purge executed!`\
+        \nrm -rf {str(count)} messages",
+    )
+
+    if BOTLOG:
+        await tgbott.send_message(
+            BOTLOG_CHATID, "Fast Purge of " + str(count) + " messages done successfully."
+        )
+    await sleep(.5)
+    await done.delete()
+
+@register(outgoing=True, pattern="^\{trg}pme".format(trg=trgg))
 async def purgeme(delme):
     """ For .purgeme, delete x count of your latest message."""
     message = delme.text
@@ -67,15 +102,16 @@ async def purgeme(delme):
         "`Purge complete!` Purged " + str(count) + " messages.",
     )
     if BOTLOG:
-        await delme.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "Purge of " + str(count) + " messages done successfully."
         )
-    await sleep(2)
+    await sleep(1)
     i = 1
     await smsg.delete()
 
 
-@register(outgoing=True, pattern="^.del$")
+
+@register(outgoing=True, pattern="^\{trg}del$".format(trg=trgg))
 async def delete_it(delme):
     """ For .del command, delete the replied message. """
     msg_src = await delme.get_reply_message()
@@ -84,17 +120,34 @@ async def delete_it(delme):
             await msg_src.delete()
             await delme.delete()
             if BOTLOG:
-                await delme.client.send_message(
+                await tgbott.send_message(
                     BOTLOG_CHATID, "Deletion of message was successful"
                 )
         except rpcbaseerrors.BadRequestError:
             if BOTLOG:
-                await delme.client.send_message(
+                await tgbott.send_message(
                     BOTLOG_CHATID, "Well, I can't delete a message"
                 )
 
+@register(outgoing=True, pattern="^\{trg}(d| D)$".format(trg=trgg))
+async def delete_it(delme):
+    """ For .del command, delete the replied message. """
+    msg_src = await delme.get_reply_message()
+    if delme.reply_to_msg_id:
+        try:
+            await msg_src.delete()
+            await delme.delete()
+            if BOTLOG:
+                await tgbott.send_message(
+                    BOTLOG_CHATID, "Deletion of message was successful"
+                )
+        except rpcbaseerrors.BadRequestError:
+            if BOTLOG:
+                await tgbott.send_message(
+                    BOTLOG_CHATID, "Well, I can't delete a message"
+                )
 
-@register(outgoing=True, pattern="^.edit")
+@register(outgoing=True, pattern="^\{trg}edit".format(trg=trgg))
 async def editer(edit):
     """ For .editme command, edit your last message. """
     message = edit.text
@@ -109,12 +162,12 @@ async def editer(edit):
             break
         i = i + 1
     if BOTLOG:
-        await edit.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, "Edit query was executed successfully"
         )
 
 
-@register(outgoing=True, pattern="^.sd")
+@register(outgoing=True, pattern="^\{trg}sd".format(trg=trgg))
 async def selfdestruct(destroy):
     """ For .sd command, make seflf-destructable messages. """
     message = destroy.text
@@ -125,7 +178,8 @@ async def selfdestruct(destroy):
     await sleep(counter)
     await smsg.delete()
     if BOTLOG:
-        await destroy.client.send_message(BOTLOG_CHATID, "sd query done successfully")
+        await tgbott.send_message(BOTLOG_CHATID, "sd query done successfully")
+
 
 
 CMD_HELP.update(
@@ -137,7 +191,14 @@ CMD_HELP.update(
 
 CMD_HELP.update(
     {
-        "purgeme": ".purgeme <x>\
+        "purge": ".p\
+        \nUsage: Purges all messages starting from the reply."
+    }
+)
+
+CMD_HELP.update(
+    {
+        "purgeme": ".pm <x>\
         \nUsage: Deletes x amount of your latest messages."
     }
 )
@@ -145,6 +206,13 @@ CMD_HELP.update(
 CMD_HELP.update(
     {
         "del": ".del\
+\nUsage: Deletes the message you replied to."
+    }
+)
+
+CMD_HELP.update(
+    {
+        "del": ".d\
 \nUsage: Deletes the message you replied to."
     }
 )
@@ -163,3 +231,4 @@ CMD_HELP.update(
 \nKeep the seconds under 100 since it puts your bot to sleep."
     }
 )
+

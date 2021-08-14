@@ -7,12 +7,13 @@
 
 from asyncio import sleep
 
-from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, bot
+from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, bot, trgg, tgbott
 from userbot.events import register
 from userbot.modules.admin import get_user_from_event
 
 
-@register(outgoing=True, pattern="^.userid$")
+@register(outgoing=True, pattern="^\{trg}id$".format(trg=trgg))
+@register(outgoing=True, pattern="^\{trg}userid$".format(trg=trgg))
 async def useridgetter(target):
     """ For .userid command, returns the ID of the target user. """
     message = await target.get_reply_message()
@@ -32,7 +33,7 @@ async def useridgetter(target):
         await target.edit("**Name:** {} \n**User ID:** `{}`".format(name, user_id))
 
 
-@register(outgoing=True, pattern="^.link(?: |$)(.*)")
+@register(outgoing=True, pattern="^\{trg}link(?: |$)(.*)".format(trg=trgg))
 async def permalink(mention):
     """ For .link command, generates a link to the user's PM with a custom text. """
     user, custom = await get_user_from_event(mention)
@@ -47,13 +48,14 @@ async def permalink(mention):
         await mention.edit(f"[{tag}](tg://user?id={user.id})")
 
 
-@register(outgoing=True, pattern="^.chatid$")
+@register(outgoing=True, pattern="^\{trg}ids$".format(trg=trgg))
+@register(outgoing=True, pattern="^\{trg}chatid$".format(trg=trgg))
 async def chatidgetter(chat):
     """ For .chatid, returns the ID of the chat you are in at that moment. """
     await chat.edit("Chat ID: `" + str(chat.chat_id) + "`")
 
 
-@register(outgoing=True, pattern=r"^.log(?: |$)([\s\S]*)")
+@register(outgoing=True, pattern=r"^\{trg}save(?: |$)([\s\S]*)".format(trg=trgg))
 async def log(log_text):
     """ For .log command, forwards a message or the command argument to the bot logs group """
     if BOTLOG:
@@ -63,7 +65,7 @@ async def log(log_text):
         elif log_text.pattern_match.group(1):
             user = f"#LOG / Chat ID: {log_text.chat_id}\n\n"
             textx = user + log_text.pattern_match.group(1)
-            await bot.send_message(BOTLOG_CHATID, textx)
+            await tgbott.send_message(BOTLOG_CHATID, textx)
         else:
             await log_text.edit("`What am I supposed to log?`")
             return
@@ -74,14 +76,14 @@ async def log(log_text):
     await log_text.delete()
 
 
-@register(outgoing=True, pattern="^.kickme$")
+@register(outgoing=True, pattern="^\{trg}kickme$".format(trg=trgg))
 async def kickme(leave):
     """ Basically it's .kickme command """
     await leave.edit("Nope, no, no, I go away")
     await leave.client.kick_participant(leave.chat_id, "me")
 
 
-@register(outgoing=True, pattern="^.unmutechat$")
+@register(outgoing=True, pattern="^\{trg}unmutechat$".format(trg=trgg))
 async def unmute_chat(unm_e):
     """ For .unmutechat command, unmute a muted chat. """
     try:
@@ -95,7 +97,7 @@ async def unmute_chat(unm_e):
     await unm_e.delete()
 
 
-@register(outgoing=True, pattern="^.mutechat$")
+@register(outgoing=True, pattern="^\{trg}mutechat$".format(trg=trgg))
 async def mute_chat(mute_e):
     """ For .mutechat command, mute any chat. """
     try:
@@ -109,7 +111,7 @@ async def mute_chat(mute_e):
     await sleep(2)
     await mute_e.delete()
     if BOTLOG:
-        await mute_e.client.send_message(
+        await tgbott.send_message(
             BOTLOG_CHATID, str(mute_e.chat_id) + " was silenced."
         )
 
@@ -132,7 +134,7 @@ async def keep_read(message):
 regexNinja = False
 
 
-@register(outgoing=True, pattern="^s/")
+@register(outgoing=True, pattern="^s/".format(trg=trgg))
 async def sedNinja(event):
     """For regex-ninja module, auto delete command starting with s/"""
     if regexNinja:
@@ -140,7 +142,7 @@ async def sedNinja(event):
         await event.delete()
 
 
-@register(outgoing=True, pattern="^.regexninja (on|off)$")
+@register(outgoing=True, pattern="^\{trg}regexninja (on|off)$".format(trg=trgg))
 async def sedNinjaToggle(event):
     """ Enables or disables the regex ninja module. """
     global regexNinja

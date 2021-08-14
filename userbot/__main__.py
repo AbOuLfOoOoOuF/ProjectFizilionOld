@@ -26,7 +26,7 @@ except PhoneNumberInvalidError:
 for module_name in ALL_MODULES:
     imported_module = import_module("userbot.modules." + module_name)
 
-LOGS.info("You are running Project Fizilion")
+LOGS.info("You are running Project Forkzilion")
 
 LOGS.info(
     "Congratulations, your userbot is now running !! Test it by typing .alive / .on in any chat."
@@ -36,4 +36,3 @@ if HEROKU_APP_NAME is not None and HEROKU_API_KEY is not None:
     LOGS.info("HEROKU detected, sleeping for 5 minutes to prevent String Session Error")
     sleep(300)
     bot.run_until_disconnected()
-bot.run_until_disconnected()

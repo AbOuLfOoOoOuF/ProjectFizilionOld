@@ -24,7 +24,7 @@ import psutil
 from git import Repo
 from telethon import __version__, version
 
-from userbot import ALIVE_LOGO, ALIVE_NAME, CMD_HELP, TIMEOUT, USERBOT_VERSION, StartTime, bot
+from userbot import ALIVE_LOGO, ALIVE_NAME, CMD_HELP, TIMEOUT, USERBOT_VERSION, StartTime, bot, trgg
 from userbot.events import register
 
 # ================= CONSTANT =================
@@ -62,7 +62,7 @@ async def get_readable_time(seconds: int) -> str:
     return up_time
 
 
-@register(outgoing=True, pattern=r"^\.spc")
+@register(outgoing=True, pattern=r"^\{trg}spc".format(trg=trgg))
 async def psu(event):
     uname = platform.uname()
     softw = "**System Information**\n"
@@ -124,7 +124,7 @@ def get_size(bytes, suffix="B"):
         bytes /= factor
 
 
-@register(outgoing=True, pattern=r"^\.sysd$")
+@register(outgoing=True, pattern=r"^\{trg}sysd$".format(trg=trgg))
 async def sysdetails(sysd):
     """ For .sysd command, get system info using neofetch. """
     if not sysd.text[0].isalpha() and sysd.text[0] not in ("/", "#", "@", "!"):
@@ -144,7 +144,7 @@ async def sysdetails(sysd):
             await sysd.edit("`Install neofetch first !!`")
 
 
-@register(outgoing=True, pattern="^.botver$")
+@register(outgoing=True, pattern="^\{trg}botver$".format(trg=trgg))
 async def bot_ver(event):
     """ For .botver command, get the bot version. """
     if not event.text[0].isalpha() and event.text[0] not in ("/", "#", "@", "!"):
@@ -180,7 +180,7 @@ async def bot_ver(event):
             )
 
 
-@register(outgoing=True, pattern="^.pip(?: |$)(.*)")
+@register(outgoing=True, pattern="^\{trg}pip(?: |$)(.*)".format(trg=trgg))
 async def pipcheck(pip):
     """ For .pip command, do a pip search. """
     if not pip.text[0].isalpha() and pip.text[0] not in ("/", "#", "@", "!"):
@@ -228,52 +228,38 @@ async def pipcheck(pip):
             await pip.edit("`Use .help pip to see an example`")
 
 
-@register(outgoing=True, pattern=r"^.(alive|on)$")
+@register(outgoing=True, pattern=r"^\{trg}(alive|on)$".format(trg=trgg))
 async def amireallyalive(alive):
     """ For .alive command, check if the bot is running.  """
     uptime = await get_readable_time((time.time() - StartTime))
     output = (
-        f"`===============================`\n"
-        f"**FIZILION IS UP AND RUNNING...**\n"
-        f"`=============================== `\n"
-        f"**[OS Info]:**\n"
-        f"•`Platform Type   : {os.name}`\n"
-        f"•`Distro          : {distro.name(pretty=False)} {distro.version(pretty=False, best=False)}`\n"
-        f"`===============================`\n"
-        f"**[PYPI Module Versions]:**\n"
-        f"•`Python         : v{python_version()} `\n"   
-        f"•`Telethon       : v{version.__version__} `\n"
-        f"•`PIP            : v{pip.__version__} `\n"
-        f"`===============================`\n"
-        f"**[MISC Info]:**\n"
-        f"•`User           : {DEFAULTUSER} `\n"
-        f"•`Running on     : {repo.active_branch.name} `\n"
-        f"•`Loaded modules : {len(modules)} `\n"
-        f"•`Fizilion       : {USERBOT_VERSION} `\n"
-        f"•`Bot Uptime     : {uptime} `\n"
-        f"`===============================`\n"
+        f"`===================================`\n"
+        f"**FORKZILION IS UP** [Dev Edition]\n"
+        f"`=================================== `\n"
+        f"•`Platform Type   :  {os.name}`\n"
+        f"•`Distro          :  {distro.name(pretty=False)}`\n"
+        f"•`Distro ver      :  {distro.version(pretty=False, best=False)}`\n"
+        f"•`Python          :  {python_version()} `\n"   
+        f"•`Telethon        :  {version.__version__} `\n"
+        f"•`PIP             :  {pip.__version__} `\n"
+        f"`===================================`\n"
+        f"•`User            : {DEFAULTUSER} `\n"
+        f"•`Branch          : {repo.active_branch.name} `\n"
+        f"•`Loaded modules  : {len(modules)} `\n"
+        f"•`Release         : {USERBOT_VERSION} `\n"
+        f"•`Bot Uptime      : {uptime} `\n"
+        f"`===================================`\n"
 
     )
-    if ALIVE_LOGO:
-        try:
-            logo = ALIVE_LOGO
-            msg = await bot.send_file(alive.chat_id, logo, caption=output, del_in=10)
-            await alive.delete()
-            await sleep(30)
-        except BaseException:
-            await alive.edit(
-                output + "\n\n *`The provided logo is invalid."
-                "\nMake sure the link is directed to the logo picture`"
-            )
-    else:
-        msg=await alive.edit(output)
-        await sleep(30)
+    msg = await alive.edit(output)
+    await sleep(30)
         
     if TIMEOUT:
         await msg.delete()
+     
         
 
-@register(outgoing=True, pattern="^.aliveu")
+@register(outgoing=True, pattern="^\{trg}aliveu".format(trg=trgg))
 async def amireallyaliveuser(username):
     """ For .aliveu command, change the username in the .alive command. """
     message = username.text
@@ -286,7 +272,7 @@ async def amireallyaliveuser(username):
     await username.edit("`" f"{output}" "`")
 
 
-@register(outgoing=True, pattern="^.resetalive$")
+@register(outgoing=True, pattern="^\{trg}resetalive$".format(trg=trgg))
 async def amireallyalivereset(ureset):
     """ For .resetalive command, reset the username in the .alive command. """
     global DEFAULTUSER
