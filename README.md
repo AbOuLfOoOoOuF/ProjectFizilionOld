@@ -64,7 +64,7 @@ wget https://raw.githubusercontent.com/PrajjuS/ProjectFizilion/demon/terminal_ge
 ### Deploy on Heroku
 Make sure you have an account of heroku and follow all the steps required.
 
-<p align="left"><a href="https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2FDunggVN%2FForkzilion%2Ftree%2FDunggVN&template=https%3A%2F%2Fgithub.com%2FDunggVN%2FForkzilion%2Ftree%2FDunggVN"> <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku" /></a></p>
+<p align="left"><a href="https://dashboard.heroku.com/new?button-url=https%3A%2F%2Fgithub.com%2Ftr1ckyv2%2FForkzilion%2Ftree%2FDunggVN&template=https%3A%2F%2Fgithub.com%2Ftr1ckyv2%2FForkzilion%2Ftree%2FDunggVN"> <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy to Heroku" /></a></p>
 
 ### Deploy on Railway
 Make Sure to Do your repo private
